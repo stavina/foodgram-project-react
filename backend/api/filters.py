@@ -7,19 +7,15 @@ from users.models import User
 
 class RecipeFilterSet(FilterSet):
     tags = filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        queryset=Tag.objects.all(),
-        to_field_name='slug'
+        field_name="tags__slug", queryset=Tag.objects.all(), to_field_name="slug"
     )
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
-    is_favorited = filters.NumberFilter(method='get_is_favorited')
-    is_in_shopping_cart = filters.NumberFilter(
-        method='get_is_in_shopping_cart'
-    )
+    is_favorited = filters.NumberFilter(method="get_is_favorited")
+    is_in_shopping_cart = filters.NumberFilter(method="get_is_in_shopping_cart")
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
+        fields = ("tags", "author", "is_favorited", "is_in_shopping_cart")
 
     def get_is_favorited(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
@@ -39,8 +35,8 @@ class RecipeFilterSet(FilterSet):
 
 
 class IngredientFilter(SearchFilter):
-    search_param = 'name'
+    search_param = "name"
 
     class Meta:
         model = Ingredient
-        fields = ('name',)
+        fields = ("name",)
