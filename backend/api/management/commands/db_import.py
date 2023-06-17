@@ -3,6 +3,7 @@ from csv import reader
 
 from django.conf import settings
 from django.core.management import BaseCommand
+
 from recipes.models import Ingredient
 
 DATA_PATH = os.path.join(settings.BASE_DIR, 'data')

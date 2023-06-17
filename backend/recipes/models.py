@@ -1,9 +1,10 @@
-from api.parameters import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                            MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models.functions import Length
+
+from api.parameters import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
+                            MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from users.models import User
 
 models.CharField.register_lookup(Length)
