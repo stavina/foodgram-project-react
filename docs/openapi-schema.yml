@@ -718,12 +718,12 @@ components:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Алекс"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Ефесов"
         is_subscribed:
           type: boolean
           readOnly: true
@@ -752,12 +752,12 @@ components:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Алекс"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Ефесов"
         is_subscribed:
           type: boolean
           readOnly: true
@@ -913,7 +913,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "vpupkin@yandex.ru"
+          example: "aefesov@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -922,22 +922,22 @@ components:
           description: "Уникальный юзернейм"
           pattern: ^[\w.@+-]+\z
           maxLength: 150
-          example: "vasya.pupkin"
+          example: "rUsure"
         first_name:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Alex"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Efesov"
         password:
           type: string
           maxLength: 150
           description: "Пароль"
-          example: "Qwerty123"
+          example: "rusure72"
       required:
         - username
         - password
@@ -952,7 +952,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "vpupkin@yandex.ru"
+          example: "aefesov@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -961,17 +961,17 @@ components:
           description: "Уникальный юзернейм"
           pattern: ^[\w.@+-]+\z
           maxLength: 150
-          example: "vasya.pupkin"
+          example: "rUsure"
         first_name:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Alex"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Efesov"
       required:
         - username
         - first_name
