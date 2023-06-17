@@ -134,12 +134,12 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         read_only=True
     )
     amount = serializers.IntegerField(validators=[
-            MinValueValidator(MIN_AMOUNT_INGREDIENTS,
-                              'Минимальное количество ингредиентов - '
-                              f'{MIN_AMOUNT_INGREDIENTS} ед.'),
-            MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
-                              'Максимальное количество ингредиентов - '
-                              f'{MAX_AMOUNT_INGREDIENTS} ед.'),
+        MinValueValidator(MIN_AMOUNT_INGREDIENTS,
+                          'Минимальное количество ингредиентов - '
+                          f'{MIN_AMOUNT_INGREDIENTS} ед.'),
+        MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
+                          'Максимальное количество ингредиентов - '
+                          f'{MAX_AMOUNT_INGREDIENTS} ед.'),
     ]
     )
 
@@ -284,8 +284,8 @@ class RecipeCreateSerializer(RecipeSerializer):
         ingredients_amount = data.get('ingredients_amount')
         if not ingredients_amount:
             raise serializers.ValidationError(
-                    'Укажите минимум 1 ингредиент.'
-                )
+                'Укажите минимум 1 ингредиент.'
+            )
         for ingredient in ingredients_amount:
             ingredients_list.append(ingredient['ingredient']['id'])
         if len(ingredients_list) > len(set(ingredients_list)):
