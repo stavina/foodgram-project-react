@@ -22,7 +22,7 @@ class User(AbstractUser):
         max_length=254,
         unique=True,
         verbose_name='Email',
-        help_text='Обязательно для заполнения. '
+        help_text='Обязательно для заполнения.'
     )
 
     role = models.CharField(

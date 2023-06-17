@@ -254,7 +254,7 @@ class RecipeCreateSerializer(RecipeSerializer):
         MaxValueValidator(MAX_COOKING_TIME,
                           'Максимальное время приготовления - '
                           f'{MAX_COOKING_TIME} минуты'),
-        ]
+]
     )
 
     class Meta:
