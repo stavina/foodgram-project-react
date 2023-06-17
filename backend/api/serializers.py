@@ -140,7 +140,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
             MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
                               'Максимальное количество ингредиентов - '
                               f'{MAX_AMOUNT_INGREDIENTS} ед.'),
-            ]
+    ]
     )
 
     class Meta:
@@ -254,7 +254,7 @@ class RecipeCreateSerializer(RecipeSerializer):
         MaxValueValidator(MAX_COOKING_TIME,
                           'Максимальное время приготовления - '
                           f'{MAX_COOKING_TIME} минуты'),
-]
+    ]
     )
 
     class Meta:
