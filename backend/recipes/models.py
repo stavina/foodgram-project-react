@@ -1,10 +1,9 @@
+from api.parameters import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
+                            MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models.functions import Length
-
-from api.parameters import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                            MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from users.models import User
 
 models.CharField.register_lookup(Length)
@@ -85,7 +84,7 @@ class Tag(models.Model):
 
 class QuerySet(models.QuerySet):
     """
-    Дополнительная модель для списка рецептов: 
+    Дополнительная модель для списка рецептов:
     добавляет избранное и список корзины.
     """
 

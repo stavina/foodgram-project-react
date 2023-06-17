@@ -22,7 +22,6 @@ services:
       - db
   frontend:
     image: efesov/foodgram_frontend
-    #command: cp -r /app/build/. /frontend_static/
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
