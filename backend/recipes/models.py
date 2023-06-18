@@ -106,6 +106,46 @@ class QuerySet(models.QuerySet):
         )
 
 
+class IngredientAmount(models.Model):
+    """Модель показывает кол-во ингредиентов."""
+
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='ingredients_amount',
+        verbose_name='Ингридиент',
+        help_text='Выберите ингредиенты'
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество',
+        default=MIN_AMOUNT_INGREDIENTS,
+        validators=[
+            MinValueValidator(
+                MIN_AMOUNT_INGREDIENTS,
+                'Минимальное количество ингредиентов - '
+                f'{MIN_AMOUNT_INGREDIENTS} ед.'),
+            MaxValueValidator(
+                MAX_AMOUNT_INGREDIENTS,
+                'Максимальное количество ингредиентов - '
+                f'{MAX_AMOUNT_INGREDIENTS} ед.'),
+        ],
+    )
+
+    class Meta:
+        ordering = ('-id',)
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты рецепта'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe'),
+                name='unique_ingredients_recipe'
+            ),
+        )
+
+    def __str__(self):
+        return f'{self.ingredient}: {self.amount}'
+
+
 class Recipe(models.Model):
     """Модель рецептов."""
 
@@ -132,7 +172,7 @@ class Recipe(models.Model):
         help_text='Описание рецепта'
     )
     ingredients = models.ManyToManyField(
-        Ingredient,
+        IngredientAmount,
         through='IngredientAmount',
         related_name='recipes',
         verbose_name='Список ингредиентов',
@@ -163,8 +203,6 @@ class Recipe(models.Model):
         verbose_name='Дата публикации'
     )
 
-    objects = QuerySet.as_manager()
-
     class Meta:
         ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
@@ -182,52 +220,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return f'{self.name} от {self.author.username}'
-
-
-class IngredientAmount(models.Model):
-    """Модель показывает кол-во ингредиентов."""
-
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE,
-        related_name='ingredients_amount',
-        verbose_name='Ингридиент',
-        help_text='Выберите ингредиенты'
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='ingredients_amount',
-        verbose_name='Рецепт'
-    )
-    amount = models.PositiveSmallIntegerField(
-        verbose_name='Количество',
-        default=MIN_AMOUNT_INGREDIENTS,
-        validators=[
-            MinValueValidator(
-                MIN_AMOUNT_INGREDIENTS,
-                'Минимальное количество ингредиентов - '
-                f'{MIN_AMOUNT_INGREDIENTS} ед.'),
-            MaxValueValidator(
-                MAX_AMOUNT_INGREDIENTS,
-                'Максимальное количество ингредиентов - '
-                f'{MAX_AMOUNT_INGREDIENTS} ед.'),
-        ],
-    )
-
-    class Meta:
-        ordering = ('-id',)
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты рецепта'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('ingredient', 'recipe'),
-                name='unique_ingredients_recipe'
-            ),
-        )
-
-    def __str__(self):
-        return f'{self.ingredient}: {self.amount}'
 
 
 class Favorite(models.Model):
