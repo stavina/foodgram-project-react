@@ -11,13 +11,13 @@
 <div>
 <img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/python/python-original.svg" title="Python" alt="Python" width="90" height="90"/>&nbsp;
 <img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/docker/docker-original-wordmark.svg" title="docker"  alt="django" width="90" height="90"/>&nbsp;
-<img src="https://icongr.am/devicon/javascript-original.svg?size=138&color=currentColor
+<img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/javascript/javascript-original.svg
 " title="django"  alt="django" width="90" height="90"/>&nbsp;
-<img src="https://icongr.am/devicon/linux-original.svg?size=138&color=currentColor
+<img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/linux/linux-original.svg
 " title="django"  alt="django" width="90" height="90"/>&nbsp;
-<img src="https://icongr.am/devicon/postgresql-original-wordmark.svg?size=138&color=currentColor
+<img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/postgresql/postgresql-original-wordmark.svg
 " title="django"  alt="django" width="90" height="90"/>&nbsp;
-<img src="https://icongr.am/devicon/react-original-wordmark.svg?size=138&color=currentColor
+<img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/react/react-original-wordmark.svg
 " title="django"  alt="django" width="90" height="90"/>&nbsp;
 <img src="https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/django/django-plain-wordmark.svg" title="django"  alt="django" width="90" height="90"/>&nbsp;
 <img src="https://www.vectorlogo.zone/logos/gunicorn/gunicorn-ar21.svg" title="django"  alt="django" width="" height="90"/>&nbsp;
