@@ -272,7 +272,6 @@ class RecipeCreateSerializer(RecipeSerializer):
             current_amount = ingredient.get('amount')
             ingredients_list.append(
                 IngredientAmount(
-                    recipe=recipe,
                     ingredient=current_ingredient,
                     amount=current_amount
                 )
@@ -299,24 +298,19 @@ class RecipeCreateSerializer(RecipeSerializer):
         ingredients = validated_data.pop('ingredients_amount')
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data, author=author)
-        recipe.tags.add(*tags)
+        recipe.tags.set(*tags)
         self.save_ingredients(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.text = validated_data.get('text', instance.text)
-        instance.image = validated_data.get('image', instance.image)
-        instance.cooking_time = validated_data.get(
-            'cooking_time',
-            instance.cooking_time
-        )
-        ingredients = validated_data.pop('ingredients_amount')
-        tags = validated_data.pop('tags')
-        instance.tags.clear()
-        instance.ingredients.clear()
-        instance.tags.add(*tags)
-        self.save_ingredients(instance, ingredients)
+        ingredients = validated_data.pop('ingredients_amount', None)
+        tags = validated_data.pop('tags', None)
+        instance = super().update(instance, validated_data)
+        if tags is not None:
+            instance.tags.set(tags)
+        if ingredients is not None:
+            instance.ingredients.clear()
+            self.save_ingredients(instance, ingredients)
         instance.save()
         return instance
 
