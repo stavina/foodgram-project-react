@@ -30,7 +30,6 @@ class User(AbstractUser):
     )
     email = models.EmailField(max_length=EMAIL_LENGTH, unique=True)
     username = models.CharField(
-        db_index=True,
         max_length=USERNAME_LENGTH,
         unique=True,
         verbose_name="Логин",
@@ -51,8 +50,19 @@ class User(AbstractUser):
         ordering = ["-username"]
 
     def __str__(self):
-        """Строковое представление модели."""
         return self.username
+
+    @property
+    def is_admin(self):
+        return self.role == ADMIN_ROLE
+
+    @property
+    def is_user(self):
+        return self.role == USER_ROLE
+
+    @property
+    def is_moderator(self):
+        return self.role == MODERATOR_ROLE
 
 
 class Subscription(models.Model):
@@ -74,7 +84,6 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-
         constraints = (
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
@@ -87,17 +96,4 @@ class Subscription(models.Model):
         )
 
     def __str__(self):
-        """Строковое представление модели."""
         return f"Пользователь {self.user}, подписан на  {self.author}"
-
-    @property
-    def is_admin(self):
-        return self.role == ADMIN_ROLE
-
-    @property
-    def is_user(self):
-        return self.role == USER_ROLE
-
-    @property
-    def is_moderator(self):
-        return self.role == MODERATOR_ROLE

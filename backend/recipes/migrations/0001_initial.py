@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='IngredientsModel',
+            name='Ingredient',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100, verbose_name='Название')),
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'Количество ингредиента',
                 'verbose_name_plural': 'Количество ингредиентов',
-                'db_table': 'recipes_recipe_ingredient',
+                'db_table': 'recipe_ingredient',
                 'ordering': ('-id',),
             },
         ),
