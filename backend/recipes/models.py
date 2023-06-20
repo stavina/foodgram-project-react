@@ -2,12 +2,19 @@ from django.db import models
 
 from users.models import User
 
+INGREDIENT_NAME_LENGTH = 100
+INGREDIENT_MEASUREMENT_LENGTH = 200
+TAG_NAME_LENGTH = 200
+TAG_COLOR_LENGTH = 7
+TAG_SLUG_LENGTH = 200
+RECIPE_NAME_LENGTH = 200
+
 
 class Ingredient(models.Model):
     """Класс ингредиентов."""
-    name = models.CharField(max_length=100, verbose_name='Название')
+    name = models.CharField(max_length=INGREDIENT_NAME_LENGTH, verbose_name='Название')
     measurement_unit = models.CharField(
-        max_length=200,
+        max_length=INGREDIENT_MEASUREMENT_LENGTH,
         verbose_name='Единица измерения'
     )
 
@@ -22,12 +29,12 @@ class Ingredient(models.Model):
 class Tag(models.Model):
     """Класс тегов для рецептов."""
     name = models.CharField(
-        max_length=200,
+        max_length=TAG_NAME_LENGTH,
         unique=True,
         verbose_name='Название'
     )
-    color = models.CharField(max_length=7, unique=True, verbose_name='Цвет')
-    slug = models.SlugField(max_length=200, unique=True)
+    color = models.CharField(max_length=TAG_COLOR_LENGTH, unique=True, verbose_name='Цвет')
+    slug = models.SlugField(max_length=TAG_SLUG_LENGTH, unique=True)
 
     class Meta:
         verbose_name = 'Тег'
@@ -45,7 +52,7 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='Автор рецепта'
     )
-    name = models.CharField(max_length=200, verbose_name='Название')
+    name = models.CharField(max_length=RECIPE_NAME_LENGTH, verbose_name='Название')
     image = models.FileField(
         upload_to='recipe_img/',
         verbose_name='Изображение'
