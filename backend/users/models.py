@@ -11,31 +11,38 @@ ROLE_CHOICES = (
     (ADMIN_ROLE, 'Администратор'),
 )
 
+ROLE_LENGTH = 20
+USERNAME_LENGTH = 150
+EMAIL_LENGTH = 254
+FIRST_NAME_LENGTH = 150
+LAST_NAME_LENGTH = 150
+PASSWORD_LENGTH = 150
+
 
 class User(AbstractUser):
     """Пользователь проекта Foodgram"""
 
     role = models.CharField(
         verbose_name='Роль',
-        max_length=20,
+        max_length=ROLE_LENGTH,
         choices=ROLE_CHOICES,
         default=USER_ROLE,
         blank=True
     )
-    email = models.EmailField(max_length=254, unique=True)
+    email = models.EmailField(max_length=EMAIL_LENGTH, unique=True)
     username = models.CharField(
         db_index=True,
-        max_length=150,
+        max_length=USERNAME_LENGTH,
         unique=True,
         verbose_name="Логин",
     )
 
     first_name = models.CharField(
-        max_length=150,
+        max_length=FIRST_NAME_LENGTH,
         verbose_name="Имя",
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=LAST_NAME_LENGTH,
         verbose_name="Фамилия",
     )
 
