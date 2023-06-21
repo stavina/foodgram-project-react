@@ -1,14 +1,13 @@
+from django.conf import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
+                         MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import MaxValueValidator, MinValueValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
-
-from api.parameters import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                            MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
+from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from users.models import User
 
 
@@ -272,6 +271,7 @@ class RecipeCreateSerializer(RecipeSerializer):
             current_amount = ingredient.get('amount')
             ingredients_list.append(
                 IngredientAmount(
+                    recipe=recipe,
                     ingredient=current_ingredient,
                     amount=current_amount
                 )
@@ -298,21 +298,18 @@ class RecipeCreateSerializer(RecipeSerializer):
         ingredients = validated_data.pop('ingredients_amount')
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data, author=author)
-        recipe.tags.set(*tags)
+        recipe.tags.add(*tags)
         self.save_ingredients(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = validated_data.pop('ingredients_amount', None)
-        tags = validated_data.pop('tags', None)
-        instance = super().update(instance, validated_data)
-        if tags is not None:
-            instance.tags.set(tags)
-        if ingredients is not None:
-            instance.ingredients.clear()
-            self.save_ingredients(instance, ingredients)
-        instance.save()
-        return instance
+        ingredients = validated_data.pop('ingredients_amount')
+        tags = validated_data.pop('tags')
+        instance.tags.clear()
+        instance.ingredients.clear()
+        instance.tags.set(*tags)
+        self.save_ingredients(instance, ingredients)
+        return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         return RecipeSerializer(instance, context=self.context).data

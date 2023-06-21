@@ -4,6 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Мин.время приготовления рецепта в минутах
+MIN_COOKING_TIME = 1
+# Макс.время приготовления рецепта в минутах
+MAX_COOKING_TIME = 1440
+# Мин.кол-во ингредиентов для рецепта
+MIN_AMOUNT_INGREDIENTS = 1
+# Макс.кол-во ингредиентов для рецепта
+MAX_AMOUNT_INGREDIENTS = 1200
+# Макс.кол-во ингредиентов для рецепта
+PAGE_SIZE = 10
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')

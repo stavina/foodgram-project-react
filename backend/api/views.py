@@ -2,13 +2,12 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
 from users.models import Follow, User
 
 from .filters import IngredientFilter, RecipeFilterSet
@@ -64,6 +63,13 @@ class UsersViewSet(mixins.CreateModelMixin,
         serializer.save()
         return Response({'detail': 'Пароль успешно изменен'},
                         status=status.HTTP_200_OK)
+
+
+class SubscriptionsViewSet(mixins.CreateModelMixin,
+                           mixins.ListModelMixin,
+                           mixins.RetrieveModelMixin,
+                           viewsets.GenericViewSet,):
+    """Вью для подписок."""
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
@@ -136,11 +142,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Recipe.objects.add_annotations(user_id).select_related(
             'author').prefetch_related('ingredients', 'tags')
 
+
+class FavoriteRecipeViewSet(viewsets.ViewSet):
+    """Вью для управления избранными рецептами."""
+
     @action(
         detail=True,
         methods=['POST'],
-        permission_classes=(AuthorOrAdminOrReadOnly,)
-    )
+        permission_classes=(AuthorOrAdminOrReadOnly,))
     def favorite(self, request, pk):
         """Добавляет рецепт в избранное."""
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -151,7 +160,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = FavoriteSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = self.get_serializer(recipe)
+        serializer = RecipeShortSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @favorite.mapping.delete
@@ -163,11 +172,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'detail': 'Рецепт успешно удален из избранного'}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
 
+
+class ShoppingCartViewSet(viewsets.ViewSet):
+    """Вью для управления корзиной покупок."""
+
     @action(
         detail=True,
         methods=['POST'],
-        permission_classes=(AuthorOrAdminOrReadOnly,)
-    )
+        permission_classes=(AuthorOrAdminOrReadOnly,))
     def shopping_cart(self, request, pk):
         """Добавляет рецепт в корзину."""
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -178,7 +190,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = ShoppingCartSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = self.get_serializer(recipe)
+        serializer = RecipeShortSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @shopping_cart.mapping.delete
@@ -189,6 +201,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         message = {
             'detail': 'Рецепт успешно удален из списка покупок'}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
+
+
+class DownloadShoppingCartViewSet(viewsets.ViewSet):
+    """Вью для загрузки файла с корзиной покупок."""
 
     @action(
         detail=False,

@@ -3,7 +3,7 @@ import os
 from django.contrib import admin
 from dotenv import load_dotenv
 
-from api.parameters import MAX_AMOUNT_INGREDIENTS, MIN_AMOUNT_INGREDIENTS
+from django.conf import MAX_AMOUNT_INGREDIENTS, MIN_AMOUNT_INGREDIENTS
 
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
                      ShoppingCart, Tag)
