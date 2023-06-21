@@ -2,9 +2,8 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models.functions import Length
-
-from django.conf import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                         MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
+from foodgram.settings import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
+                               MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from users.models import User
 
 models.CharField.register_lookup(Length)

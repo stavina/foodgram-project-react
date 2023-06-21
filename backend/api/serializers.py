@@ -1,5 +1,5 @@
-from django.conf import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                         MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
+from foodgram.settings import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
+                               MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME)
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import MaxValueValidator, MinValueValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
