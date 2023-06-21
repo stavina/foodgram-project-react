@@ -265,18 +265,16 @@ class RecipeCreateSerializer(RecipeSerializer):
 
     @staticmethod
     def save_ingredients(recipe, ingredients):
-        ingredients_list = []
         for ingredient in ingredients:
             current_ingredient = ingredient['ingredient']['id']
             current_amount = ingredient.get('amount')
-            ingredients_list.append(
-                IngredientAmount(
-                    recipe=recipe,
-                    ingredient=current_ingredient,
-                    amount=current_amount
-                )
+            obj, created = IngredientAmount.objects.get_or_create(
+                recipe=recipe,
+                ingredient=current_ingredient,
+                amount=current_amount
             )
-        IngredientAmount.objects.bulk_create(ingredients_list)
+        if created:
+            pass
 
     def validate(self, data):
         ingredients_list = []
