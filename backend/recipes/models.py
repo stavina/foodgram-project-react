@@ -66,14 +66,15 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         max_length=RECIPE_NAME_LENGTH,
-        verbose_name='Название')
-    image = models.FileField(
-        upload_to='recipe_img/',
-        verbose_name='Изображение'
+        db_index=True,
+        verbose_name='Название',)
+    image = models.ImageField(
+        upload_to='recipes/%Y/%m/%d/',
+        verbose_name='Изображение',
     )
-    text = models.TextField()
+    text = models.TextField(verbose_name='Описание')
     ingredients = models.ManyToManyField(
-        Ingredient,
+        'Ingredient',
         related_name='recipes',
         verbose_name='Ингредиенты'
     )
