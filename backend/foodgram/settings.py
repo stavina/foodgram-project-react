@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -15,11 +16,11 @@ MAX_AMOUNT_INGREDIENTS = 1200
 # Макс.кол-во ингредиентов для рецепта
 PAGE_SIZE = 10
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'groceryassistant.sytes.net']
 
