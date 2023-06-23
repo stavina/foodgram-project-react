@@ -202,10 +202,6 @@ class ShoppingCartViewSet(viewsets.ViewSet):
             'detail': 'Рецепт успешно удален из списка покупок'}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
 
-
-class DownloadShoppingCartViewSet(viewsets.ViewSet):
-    """Вью для загрузки файла с корзиной покупок."""
-
     @action(
         detail=False,
         methods=['GET'],
