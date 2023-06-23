@@ -64,16 +64,10 @@ class UsersViewSet(mixins.CreateModelMixin,
         return Response({'detail': 'Пароль успешно изменен'},
                         status=status.HTTP_200_OK)
 
-
-class SubscriptionsViewSet(mixins.CreateModelMixin,
-                           mixins.ListModelMixin,
-                           mixins.RetrieveModelMixin,
-                           viewsets.GenericViewSet,):
-    """Вью для подписок."""
-
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
     def subscriptions(self, request):
+        """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
         page = self.paginate_queryset(queryset)
         serializer = FollowSerializer(page, many=True,
@@ -83,6 +77,7 @@ class SubscriptionsViewSet(mixins.CreateModelMixin,
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
     def subscribe(self, request, pk):
+        """Подписка/отписка текущего пользователя на/от автора."""
         author = get_object_or_404(User, id=pk)
         if request.method == 'POST':
             serializer = FollowUserSerializer(author, data=request.data,
@@ -201,6 +196,10 @@ class ShoppingCartViewSet(viewsets.ViewSet):
         message = {
             'detail': 'Рецепт успешно удален из списка покупок'}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
+
+
+class DownloadShoppingCartViewSet(viewsets.ViewSet):
+    """Вью для загрузки файла с корзиной покупок."""
 
     @action(
         detail=False,
