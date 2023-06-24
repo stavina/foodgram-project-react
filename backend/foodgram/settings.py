@@ -5,16 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Мин.время приготовления рецепта в минутах
-MIN_COOKING_TIME = 1
-# Макс.время приготовления рецепта в минутах
-MAX_COOKING_TIME = 1440
-# Мин.кол-во ингредиентов для рецепта
-MIN_AMOUNT_INGREDIENTS = 1
-# Макс.кол-во ингредиентов для рецепта
-MAX_AMOUNT_INGREDIENTS = 1200
-# Макс.кол-во ингредиентов для рецепта
-PAGE_SIZE = 10
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'groceryassistant.sytes.net']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'imstvna.ddns.net']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -130,7 +120,7 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer',
+        'user_create': 'api.serializers.UserCreatingSerializer',
         'user': 'api.serializers.UserReadSerializer',
         'current_user': 'api.serializers.UserReadSerializer',
     },

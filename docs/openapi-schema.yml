@@ -913,7 +913,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "aefesov@yandex.ru"
+          example: "imstvna@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -932,7 +932,7 @@ components:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Efesov"
+          example: "Test"
         password:
           type: string
           maxLength: 150
@@ -952,7 +952,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "aefesov@yandex.ru"
+          example: "imstvna@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -971,7 +971,7 @@ components:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Efesov"
+          example: "Test"
       required:
         - username
         - first_name

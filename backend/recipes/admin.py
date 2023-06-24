@@ -3,12 +3,13 @@ import os
 from django.contrib import admin
 from dotenv import load_dotenv
 
-from foodgram.settings import MAX_AMOUNT_INGREDIENTS, MIN_AMOUNT_INGREDIENTS
 
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
                      ShoppingCart, Tag)
 
 load_dotenv()
+
+MIN_AMOUNT_INGREDIENTS = 1
 
 
 @admin.register(Tag)
@@ -23,7 +24,6 @@ class IngredientInline(admin.TabularInline):
     model = IngredientAmount
     extra = 0
     min_num = MIN_AMOUNT_INGREDIENTS
-    max_num = MAX_AMOUNT_INGREDIENTS
 
 
 @admin.register(Ingredient)

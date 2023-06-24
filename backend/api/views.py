@@ -7,34 +7,33 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from .filters import IngredientFilter, RecipeFilterSet
+from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
+from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
+                          IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, RecipeSubscriptionSerializer,
+                          ShoppingCartSerializer, SubscriptionSerializer,
+                          TagSerializer, UserCreatingSerializer,
+                          UserReadSerializer)
+
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow, User
-
-from .filters import IngredientFilter, RecipeFilterSet
-from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
-from .serializers import (FavoriteSerializer, FollowSerializer,
-                          FollowUserSerializer, IngredientSerializer,
-                          RecipeCreateSerializer, RecipeSerializer,
-                          RecipeShortSerializer, SetPasswordSerializer,
-                          ShoppingCartSerializer, TagSerializer,
-                          UserCreateSerializer, UserReadSerializer)
 
 
 class UsersViewSet(mixins.CreateModelMixin,
                    mixins.ListModelMixin,
                    mixins.RetrieveModelMixin,
                    viewsets.GenericViewSet,):
-    """Вью для users."""
-
+    """ViewSet для User."""
     queryset = User.objects.all()
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):
             return UserReadSerializer
         if self.action == 'set_password':
-            return SetPasswordSerializer
-        return UserCreateSerializer
+            return ChangePasswordSerializer
+        return UserCreatingSerializer
 
     def get_permissions(self):
         if self.action in ['retrieve', 'me', 'set_password', 'subscriptions',
@@ -71,8 +70,8 @@ class UsersViewSet(mixins.CreateModelMixin,
         """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
         page = self.paginate_queryset(queryset)
-        serializer = FollowSerializer(page, many=True,
-                                      context={'request': request})
+        serializer = SubscriptionSerializer(page, many=True,
+                                            context={'request': request})
         return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=['POST', 'DELETE'],
@@ -81,9 +80,9 @@ class UsersViewSet(mixins.CreateModelMixin,
         """Подписка/отписка текущего пользователя на/от автора."""
         author = get_object_or_404(User, id=pk)
         if request.method == 'POST':
-            serializer = FollowUserSerializer(author, data=request.data,
-                                              context={'request': request,
-                                                       'author': author})
+            serializer = SubscriptionSerializer(author, data=request.data,
+                                                context={'request': request,
+                                                         'author': author})
             serializer.is_valid(raise_exception=True)
             Follow.objects.create(user=request.user, author=author)
             return Response(serializer.data,
@@ -97,8 +96,7 @@ class UsersViewSet(mixins.CreateModelMixin,
 class TagsViewSet(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
-    """Вью тэговв."""
-
+    """Вьюсет для тэгов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AdminOrReadOnly,)
@@ -106,29 +104,27 @@ class TagsViewSet(mixins.ListModelMixin,
 
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
-    """Вью игнидриентов."""
-
+    """Вьюсет для ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (IngredientFilter,)
     permission_classes = (AdminOrReadOnly,)
-    search_fields = ('^name',)
     pagination_class = None
+    search_fields = ('^name',)
+    filter_backends = (IngredientFilter,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """Вью рецептов."""
-
+    """Вьюсет для рецептов."""
     queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
     permission_classes = (AuthorOrAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilterSet
     filterset_class = RecipeFilterSet
-    serializer_class = RecipeSerializer
 
     def get_serializer_class(self):
         if self.action in ('favorite', 'shopping_cart'):
-            return RecipeShortSerializer
+            return RecipeSubscriptionSerializer
         if self.action in ('create', 'partial_update'):
             return RecipeCreateSerializer
         return RecipeSerializer
@@ -140,8 +136,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class FavoriteRecipeViewSet(viewsets.ViewSet):
-    """Вью для управления избранными рецептами."""
-
+    """Вьюсет для избранных рецептов."""
     @action(
         detail=True,
         methods=['POST'],
@@ -156,7 +151,7 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
         serializer = FavoriteSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = RecipeShortSerializer(recipe)
+        serializer = RecipeSubscriptionSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @favorite.mapping.delete
@@ -170,8 +165,7 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
 
 
 class ShoppingCartViewSet(viewsets.ViewSet):
-    """Вью для управления корзиной покупок."""
-
+    """Вьюсет для корзины покупок."""
     @action(
         detail=True,
         methods=['POST'],
@@ -186,7 +180,7 @@ class ShoppingCartViewSet(viewsets.ViewSet):
         serializer = ShoppingCartSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = RecipeShortSerializer(recipe)
+        serializer = RecipeSubscriptionSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @shopping_cart.mapping.delete
@@ -200,8 +194,7 @@ class ShoppingCartViewSet(viewsets.ViewSet):
 
 
 class DownloadShoppingCartViewSet(viewsets.ViewSet):
-    """Вью для загрузки файла с корзиной покупок."""
-
+    """Вьюсет для загрузки файла с корзиной покупок."""
     @action(
         detail=False,
         methods=['GET'],
