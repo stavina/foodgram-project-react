@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
@@ -37,12 +37,9 @@ class UsersViewSet(mixins.CreateModelMixin,
         return UserCreatingSerializer
 
     def get_permissions(self):
-        if self.action in ['retrieve', 'me', 'set_password', 'subscriptions',
-                           'subscribe']:
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [AllowAny]
-        return [permission() for permission in permission_classes]
+        if self.action == 'retrieve':
+            self.permission_classes = [IsAuthenticated, ]
+        return super(self.__class__, self).get_permissions()
 
     @action(
         detail=False,
