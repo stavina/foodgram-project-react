@@ -5,14 +5,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
+from constants import MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME, WRONG_NAMES
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import User
-
-
-MIN_COOKING_TIME = 1
-MIN_AMOUNT_INGREDIENTS = 1
-PAGE_SIZE = 10
 
 
 class UserCreatingSerializer(UserCreateSerializer):
@@ -33,8 +29,7 @@ class UserCreatingSerializer(UserCreateSerializer):
         username = data.get('username')
         first_name = data.get('first_name')
         last_name = data.get('last_name')
-        forbidden_usernames = ['me', 'Me', 'ME', 'set_password',
-                               'subscriptions', 'subscribe']
+        forbidden_usernames = WRONG_NAMES
         if self.initial_data.get('username') in forbidden_usernames:
             raise serializers.ValidationError(
                 {'username': f'Вы не можете использовать {username}'

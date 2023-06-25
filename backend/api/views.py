@@ -27,6 +27,7 @@ class UsersViewSet(mixins.CreateModelMixin,
                    viewsets.GenericViewSet,):
     """ViewSet для User."""
     queryset = User.objects.all()
+    permission_classes = (IsAuthenticated, )
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):

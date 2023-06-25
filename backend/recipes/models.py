@@ -2,17 +2,12 @@ from django.core.validators import (MinValueValidator, RegexValidator)
 from django.db import models
 from django.db.models.functions import Length
 
+from api.constants import (MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME,
+                           RECIPE_NAME_LENGTH, TAG_COLOR_LENGTH,
+                           TAG_NAME_LENGTH, TAG_SLUG_LENGTH)
 from users.models import User
 
 models.CharField.register_lookup(Length)
-
-MIN_COOKING_TIME = 1
-MIN_AMOUNT_INGREDIENTS = 1
-PAGE_SIZE = 10
-TAG_NAME_LENGTH = 200
-TAG_COLOR_LENGTH = 7
-TAG_SLUG_LENGTH = 200
-RECIPE_NAME_LENGTH = 200
 
 
 class Ingredient(models.Model):
