@@ -30,7 +30,7 @@ jobs:
         pip install -r ./backend/requirements.txt 
     - name: Test with flake8
       env:
-        SECRET_KEY: django-insecure-i3oa78jvvn)y(yvx)_zo$(uxp4$jw4c*dub1bl6#&u5mf&x_ix
+        SECRET_KEY: django-insecure-p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs
         POSTGRES_USER: django_user
         POSTGRES_PASSWORD: django_password
         POSTGRES_DB: django_db
