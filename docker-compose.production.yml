@@ -20,6 +20,8 @@ services:
     volumes:
       - static:/static_backend
       - media:/media
+    depends_on:
+      - db
   frontend:
     container_name: foodgram_frontend
     image: imstvna/foodgram_frontend
