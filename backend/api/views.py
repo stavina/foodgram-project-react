@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
@@ -27,7 +27,7 @@ class UsersViewSet(mixins.CreateModelMixin,
                    viewsets.GenericViewSet,):
     """ViewSet для User."""
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):
