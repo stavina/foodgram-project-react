@@ -154,7 +154,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'author', 'name', 'text', 'ingredients', 'tags',
-                  'cooking_time', 'image', 'is_in_shopping_cart')
+                  'cooking_time', 'image', 'is_in_shopping_cart', 'is_favorited')
 
 
 class RecipeSubscriptionSerializer(RecipeSerializer):
