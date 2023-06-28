@@ -13,3 +13,8 @@
 - djangorestframework==3.12.4
 - Docker
 - Yandex Cloud
+
+## Данные
+Сайт: https://imstvna.ddns.net/
+E-mail администратора: imstvna@yandex.ru
+пароль администратора: 1234йцук
