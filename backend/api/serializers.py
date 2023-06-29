@@ -230,7 +230,9 @@ class FollowSerializer(serializers.ModelSerializer):
         recipes = obj.recipes.all()
         if recipes_limit:
             recipes = recipes[: int(recipes_limit)]
-        serializer = RecipeSerializer(recipes, many=True, read_only=True)
+        serializer = RecipeSubscriptionSerializer(recipes,
+                                                  many=True,
+                                                  read_only=True)
         return serializer.data
 
 
