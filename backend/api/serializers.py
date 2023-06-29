@@ -1,12 +1,12 @@
 from django.contrib.auth.password_validation import validate_password
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from api.constants import (MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME, WRONG_NAMES,
-                           MAX_AMOUNT_INGREDIENTS)
+from api.constants import (MAX_AMOUNT_INGREDIENTS, MIN_AMOUNT_INGREDIENTS,
+                           MIN_COOKING_TIME, WRONG_NAMES)
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import User
