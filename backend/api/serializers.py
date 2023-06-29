@@ -5,7 +5,8 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from api.constants import MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME, WRONG_NAMES
+from api.constants import (MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME, WRONG_NAMES,
+                           MAX_AMOUNT_INGREDIENTS)
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import User
@@ -133,6 +134,9 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         MinValueValidator(MIN_AMOUNT_INGREDIENTS,
                           'Минимальное количество ингредиентов - '
                           f'{MIN_AMOUNT_INGREDIENTS} ед.'),
+      MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
+                          'Максимальное количество ингредиентов - '
+                          f'{MAX_AMOUNT_INGREDIENTS} ед.'),
     ]
     )
 
