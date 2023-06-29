@@ -140,7 +140,7 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
         detail=True,
         methods=['POST'],
         permission_classes=(AuthorOrAdminOrReadOnly,),
-        pagination_class = CustomQueryPagination)
+        pagination_class=CustomQueryPagination)
     def favorite(self, request, pk):
         """Добавляет рецепт в избранное."""
         recipe = get_object_or_404(Recipe, pk=pk)
