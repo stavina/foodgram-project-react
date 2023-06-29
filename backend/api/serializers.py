@@ -134,7 +134,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         MinValueValidator(MIN_AMOUNT_INGREDIENTS,
                           'Минимальное количество ингредиентов - '
                           f'{MIN_AMOUNT_INGREDIENTS} ед.'),
-      MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
+        MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
                           'Максимальное количество ингредиентов - '
                           f'{MAX_AMOUNT_INGREDIENTS} ед.'),
     ]
