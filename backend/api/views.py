@@ -118,6 +118,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
+    pagination_class = PageLimitPagination
     filter_class = RecipeFilterSet
     filterset_class = RecipeFilterSet
 
@@ -139,8 +140,7 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
     @action(
         detail=True,
         methods=['POST'],
-        permission_classes=(AuthorOrAdminOrReadOnly,),
-        pagination_class=PageLimitPagination)
+        permission_classes=(AuthorOrAdminOrReadOnly,))
     def favorite(self, request, pk):
         """Добавляет рецепт в избранное."""
         recipe = get_object_or_404(Recipe, pk=pk)
