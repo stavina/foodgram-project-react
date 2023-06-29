@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
+from .pagination import PageLimitPagination
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
@@ -138,7 +139,8 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
     @action(
         detail=True,
         methods=['POST'],
-        permission_classes=(AuthorOrAdminOrReadOnly,))
+        permission_classes=(AuthorOrAdminOrReadOnly,),
+        pagination_class=PageLimitPagination)
     def favorite(self, request, pk):
         """Добавляет рецепт в избранное."""
         recipe = get_object_or_404(Recipe, pk=pk)
