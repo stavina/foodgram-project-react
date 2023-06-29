@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from api.constants import (MAX_AMOUNT_INGREDIENTS, MIN_AMOUNT_INGREDIENTS,
-                           MIN_COOKING_TIME, WRONG_NAMES)
+                           MAX_COOKING_TIME, MIN_COOKING_TIME, WRONG_NAMES)
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import User
@@ -239,6 +239,9 @@ class RecipeCreateSerializer(RecipeSerializer):
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
                           f'{MIN_COOKING_TIME} минута'),
+        MaxValueValidator(MAX_COOKING_TIME,
+                          'Максимальное время приготовления - '
+                          f'{MAX_COOKING_TIME} минута'),
     ]
     )
 
