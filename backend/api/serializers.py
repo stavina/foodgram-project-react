@@ -226,9 +226,6 @@ class FollowSerializer(serializers.ModelSerializer):
             recipes_limit = int(request.GET.get('recipes_limit'))
             queryset = Recipe.objects.filter(
                 author=obj.author)[:recipes_limit]
-        else:
-            queryset = Recipe.objects.filter(
-                author=obj.author)
         serializer = RecipeSubscriptionSerializer(
             queryset, read_only=True, many=True
         )
