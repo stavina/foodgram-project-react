@@ -12,12 +12,13 @@ from .filters import IngredientFilter, RecipeFilterSet
 from .pagination import PageLimitPagination
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
+                          FollowSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           RecipeSerializer, RecipeSubscriptionSerializer,
                           ShoppingCartSerializer, SubscriptionSerializer,
                           TagSerializer, UserCreatingSerializer,
                           UserReadSerializer)
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+from recipes.models import (Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow, User
 
@@ -137,31 +138,33 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteRecipeViewSet(viewsets.ViewSet):
     """Вьюсет для избранных рецептов."""
-    @action(
-        detail=True,
-        methods=['POST'],
-        permission_classes=(AuthorOrAdminOrReadOnly,))
-    def favorite(self, request, pk):
-        """Добавляет рецепт в избранное."""
-        recipe = get_object_or_404(Recipe, pk=pk)[:3]
-        data = {
-            'user': request.user.pk,
-            'recipe': recipe.pk
-        }
-        serializer = FavoriteSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        serializer = RecipeSubscriptionSerializer(recipe)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    @action(detail=False, methods=['GET'],
+            permission_classes=(IsAuthenticated,))
+    def subscriptions(self, request):
+        """Список подписок пользователя."""
+        queryset = User.objects.filter(following__user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = FavoriteSerializer(page, many=True,
+                                        context={'request': request})
+        return self.get_paginated_response(serializer.data)
 
-    @favorite.mapping.delete
-    def delete_favorite(self, request, pk):
-        """Удаляет рецепт из избранного."""
-        recipe = get_object_or_404(Recipe, pk=pk)
-        Favorite.objects.filter(user=request.user, recipe=recipe).delete()
-        message = {
-            'detail': 'Рецепт успешно удален из избранного'}
-        return Response(message, status=status.HTTP_204_NO_CONTENT)
+    @action(detail=True, methods=['POST', 'DELETE'],
+            permission_classes=(IsAuthenticated,))
+    def subscribe(self, request, pk):
+        """Подписка/отписка текущего пользователя на/от автора."""
+        author = get_object_or_404(User, id=pk)
+        if request.method == 'POST':
+            serializer = FollowSerializer(author, data=request.data,
+                                          context={'request': request,
+                                                   'author': author})
+            serializer.is_valid(raise_exception=True)
+            Follow.objects.create(user=request.user, author=author)
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
+        get_object_or_404(Follow, user=request.user,
+                          author=author).delete()
+        return Response({'detail': 'Успешная отписка'},
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 class ShoppingCartViewSet(viewsets.ViewSet):
