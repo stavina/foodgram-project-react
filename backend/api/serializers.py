@@ -204,14 +204,14 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     """Авторы на которых подписан пользователь."""
     is_subscribed = serializers.SerializerMethodField()
-    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(source='recipes.count',
                                              read_only=True)
+    recipes = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name',
-                  'last_name', 'is_subscribed', 'recipes_count', 'recipes')
+                  'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def get_is_subscribed(self, obj):
         """Проверка подписки пользователя на автора."""
