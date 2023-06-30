@@ -215,7 +215,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         """Проверка подписки пользователя на автора."""
-        user = self.context.get('request')
+        user = self.context.get('request').user
         return (user.is_authenticated
                 and user.follower.filter(author=obj).exists())
 
