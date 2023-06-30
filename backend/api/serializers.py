@@ -204,9 +204,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     """Авторы на которых подписан пользователь."""
     is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(source='recipes.count',
                                              read_only=True)
-    recipes = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -226,7 +226,7 @@ class FollowSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_recipes_count(self, obj):
-        return obj.author.recipes.count()
+        return obj.recipes.count()
 
 
 class RecipeCreateSerializer(RecipeSerializer):
