@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from .filters import IngredientFilter, RecipeFilterSet
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
+                          FollowSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           RecipeSerializer, RecipeSubscriptionSerializer,
                           ShoppingCartSerializer, SubscriptionSerializer,
@@ -68,8 +69,8 @@ class UsersViewSet(mixins.CreateModelMixin,
         """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
         page = self.paginate_queryset(queryset)
-        serializer = SubscriptionSerializer(page, many=True,
-                                            context={'request': request})
+        serializer = FollowSerializer(page, many=True,
+                                      context={'request': request})
         return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=['POST', 'DELETE'],
