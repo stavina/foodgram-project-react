@@ -224,16 +224,12 @@ class FollowSerializer(serializers.ModelSerializer):
         return (user.is_authenticated
                 and user.follower.filter(author=author).exists())
 
-    @staticmethod
-    def get_recipes_count(obj):
-        return obj.recipes.count()
-
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.GET.get('recipes_limit')
-        recipes = obj.recipes.all()
-        if limit:
-            recipes = recipes[:int(limit)]
+        recipes_limit = request.GET.get('recipes_limit')
+        recipes = obj.recipes.all()[:3]
+        if recipes_limit:
+            recipes = recipes[: int(recipes_limit)]
         serializer = RecipeSubscriptionSerializer(recipes,
                                                   many=True,
                                                   read_only=True)
