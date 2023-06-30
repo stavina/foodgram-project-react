@@ -216,9 +216,8 @@ class FollowSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         """Проверка подписки пользователя на автора."""
         request = self.context.get('request')
-        return Favorite.objects.filter(
-            author=obj, user=request.user
-        ).exists()
+        return (request.is_authenticated
+                and request.follower.filter(author=obj).exists())
 
     def get_recipes(self, obj):
         recipes = obj.recipes.all()[:3]
