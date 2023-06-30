@@ -217,7 +217,7 @@ class FollowSerializer(serializers.ModelSerializer):
         """Проверка подписки пользователя на автора."""
         request = self.context.get('request')
         return Favorite.objects.filter(
-            author=obj.author, user=request.user
+            author=obj, user=request.user
         ).exists()
 
     def get_recipes(self, obj):
