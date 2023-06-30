@@ -1,13 +1,11 @@
 from django.contrib.auth.password_validation import validate_password
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from api.constants import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                           MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME,
-                           WRONG_NAMES)
+from api.constants import MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME, WRONG_NAMES
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import User
@@ -135,9 +133,6 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         MinValueValidator(MIN_AMOUNT_INGREDIENTS,
                           'Минимальное количество ингредиентов - '
                           f'{MIN_AMOUNT_INGREDIENTS} ед.'),
-        MaxValueValidator(MAX_AMOUNT_INGREDIENTS,
-                          'Максимальное количество ингредиентов - '
-                          f'{MAX_AMOUNT_INGREDIENTS} ед.'),
     ]
     )
 
@@ -218,26 +213,29 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name',
                   'last_name', 'is_subscribed', 'recipes_count', 'recipes')
 
-    def get_is_subscribed(self, author):
+    def get_is_subscribed(self, obj):
         """Проверка подписки пользователя на автора."""
-        user = self.context.get('request').user
-        return (user.is_authenticated
-                and user.follower.filter(author=author).exists())
-
-    @staticmethod
-    def get_recipes_count(obj):
-        return obj.recipes.count()
+        request = self.context.get('request')
+        return Favorite.objects.filter(
+            author=obj.author, user=request.user
+        ).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.query_params.get('recipes_limit')
-        recipes = obj.recipes.select_related('author')
-        if limit:
-            recipes = recipes[:int(limit)]
-        serializer = RecipeSubscriptionSerializer(recipes,
-                                                  many=True,
-                                                  read_only=True)
+        if request.GET.get('recipe_limit'):
+            recipe_limit = int(request.GET.get('recipe_limit'))
+            queryset = Recipe.objects.filter(
+                author=obj.author)[:recipe_limit]
+        else:
+            queryset = Recipe.objects.filter(
+                author=obj.author)
+        serializer = RecipeSubscriptionSerializer(
+            queryset, read_only=True, many=True
+        )
         return serializer.data
+
+    def get_recipes_count(self, obj):
+        return obj.author.recipes.count()
 
 
 class RecipeCreateSerializer(RecipeSerializer):
@@ -250,9 +248,6 @@ class RecipeCreateSerializer(RecipeSerializer):
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
                           f'{MIN_COOKING_TIME} минута'),
-        MaxValueValidator(MAX_COOKING_TIME,
-                          'Максимальное время приготовления - '
-                          f'{MAX_COOKING_TIME} минута'),
     ]
     )
 
@@ -275,13 +270,6 @@ class RecipeCreateSerializer(RecipeSerializer):
             pass
 
     def validate(self, data):
-        tags = data['tags']
-        tags_list = []
-        for tags_item in tags:
-            if tags_item in tags_list:
-                raise serializers.ValidationError(
-                    'Тэги не должны повторяться')
-            tags_list.append(tags_item)
         ingredients_list = []
         ingredients_amount = data.get('ingredients_amount')
         if not ingredients_amount:

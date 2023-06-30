@@ -1,11 +1,8 @@
-from django.core.validators import (MaxValueValidator,
-                                    MinValueValidator,
-                                    RegexValidator)
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.db.models.functions import Length
 
-from api.constants import (MAX_AMOUNT_INGREDIENTS, MAX_COOKING_TIME,
-                           MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME,
+from api.constants import (MIN_AMOUNT_INGREDIENTS, MIN_COOKING_TIME,
                            RECIPE_NAME_LENGTH, TAG_COLOR_LENGTH,
                            TAG_NAME_LENGTH, TAG_SLUG_LENGTH)
 from users.models import User
@@ -143,10 +140,6 @@ class Recipe(models.Model):
                 MIN_COOKING_TIME,
                 'Минимальное время приготовления - '
                 f'{MIN_COOKING_TIME} минута'),
-            MaxValueValidator(
-                MAX_COOKING_TIME,
-                'Максимальное время приготовления - '
-                f'{MAX_COOKING_TIME} минута'),
         ],
     )
     pub_date = models.DateTimeField(
@@ -197,10 +190,6 @@ class IngredientAmount(models.Model):
                 MIN_AMOUNT_INGREDIENTS,
                 'Минимальное количество ингредиентов - '
                 f'{MIN_AMOUNT_INGREDIENTS} ед.'),
-            MaxValueValidator(
-                MAX_AMOUNT_INGREDIENTS,
-                'Максимальное количество ингредиентов - '
-                f'{MAX_AMOUNT_INGREDIENTS} ед.'),
         ],
     )
 

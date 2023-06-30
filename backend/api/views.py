@@ -11,13 +11,12 @@ from rest_framework.response import Response
 from .filters import IngredientFilter, RecipeFilterSet
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
-                          FollowSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           RecipeSerializer, RecipeSubscriptionSerializer,
                           ShoppingCartSerializer, SubscriptionSerializer,
                           TagSerializer, UserCreatingSerializer,
                           UserReadSerializer)
-from recipes.models import (Ingredient, IngredientAmount, Recipe,
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow, User
 
@@ -68,7 +67,7 @@ class UsersViewSet(mixins.CreateModelMixin,
     def subscriptions(self, request):
         """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
-        page = self.paginate_queryset(queryset)[:3]
+        page = self.paginate_queryset(queryset)
         serializer = SubscriptionSerializer(page, many=True,
                                             context={'request': request})
         return self.get_paginated_response(serializer.data)
@@ -136,11 +135,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteRecipeViewSet(viewsets.ViewSet):
     """Вьюсет для избранных рецептов."""
-
-    @action(detail=False, methods=['POST'],
-            permission_classes=(IsAuthenticated,),)
-    def subscribe(self, request, pk):
-        """Подписка/отписка текущего пользователя на/от автора."""
+    @action(
+        detail=True,
+        methods=['POST'],
+        permission_classes=(AuthorOrAdminOrReadOnly,))
+    def favorite(self, request, pk):
+        """Добавляет рецепт в избранное."""
         recipe = get_object_or_404(Recipe, pk=pk)
         data = {
             'user': request.user.pk,
@@ -152,12 +152,11 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
         serializer = RecipeSubscriptionSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @subscribe.mapping.delete
-    def delete_subscribe(self, request, pk):
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk):
         """Удаляет рецепт из избранного."""
         recipe = get_object_or_404(Recipe, pk=pk)
-        FollowSerializer.objects.filter(user=request.user,
-                                        recipe=recipe).delete()
+        Favorite.objects.filter(user=request.user, recipe=recipe).delete()
         message = {
             'detail': 'Рецепт успешно удален из избранного'}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
