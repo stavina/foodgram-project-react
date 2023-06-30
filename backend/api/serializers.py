@@ -221,14 +221,8 @@ class FollowSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes(self, obj):
-        request = self.context.get('request')
-        if request.GET.get('recipes_limit'):
-            recipes_limit = int(request.GET.get('recipes_limit'))
-            queryset = Recipe.objects.filter(
-                author=obj.author)[:recipes_limit]
-        serializer = RecipeSubscriptionSerializer(
-            queryset, read_only=True, many=True
-        )
+        recipes = obj.recipes.all()[:3]
+        serializer = RecipeSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
     def get_recipes_count(self, obj):
