@@ -225,14 +225,8 @@ class FollowSerializer(serializers.ModelSerializer):
                 and user.follower.filter(author=author).exists())
 
     def get_recipes(self, obj):
-        request = self.context.get('request')
-        recipes_limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()[:3]
-        if recipes_limit:
-            recipes = recipes[: int(recipes_limit)]
-        serializer = RecipeSubscriptionSerializer(recipes,
-                                                  many=True,
-                                                  read_only=True)
+        serializer = RecipeSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
 
