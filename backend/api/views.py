@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
-from .pagination import CustomLimitPagination, PageLimitPagination
+from .pagination import PageLimitPagination
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
                           FollowSerializer,
@@ -139,8 +139,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class FavoriteRecipeViewSet(viewsets.ViewSet):
     """Вьюсет для избранных рецептов."""
     @action(detail=False, methods=['GET'],
-            permission_classes=(IsAuthenticated,),
-            pagination_class=CustomLimitPagination)
+            permission_classes=(IsAuthenticated,),)
     def subscriptions(self, request):
         """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
