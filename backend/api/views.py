@@ -30,6 +30,7 @@ class UsersViewSet(mixins.CreateModelMixin,
     """ViewSet для User."""
     queryset = User.objects.all()
     permission_classes = (AllowAny, )
+    pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):
@@ -138,6 +139,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteRecipeViewSet(viewsets.ViewSet):
     """Вьюсет для избранных рецептов."""
+    pagination_class = PageLimitPagination
+
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,),)
     def subscriptions(self, request):
