@@ -9,7 +9,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
-from .pagination import PageLimitPagination
 from .permissions import AdminOrReadOnly, AuthorOrAdminOrReadOnly
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
                           FollowSerializer,
@@ -30,7 +29,6 @@ class UsersViewSet(mixins.CreateModelMixin,
     """ViewSet для User."""
     queryset = User.objects.all()
     permission_classes = (AllowAny, )
-    pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):
@@ -70,7 +68,7 @@ class UsersViewSet(mixins.CreateModelMixin,
     def subscriptions(self, request):
         """Список подписок пользователя."""
         queryset = User.objects.filter(following__user=request.user)
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(queryset)[:3]
         serializer = SubscriptionSerializer(page, many=True,
                                             context={'request': request})
         return self.get_paginated_response(serializer.data)
@@ -120,7 +118,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    pagination_class = PageLimitPagination
     filter_class = RecipeFilterSet
     filterset_class = RecipeFilterSet
 
@@ -139,35 +136,31 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteRecipeViewSet(viewsets.ViewSet):
     """Вьюсет для избранных рецептов."""
-    pagination_class = PageLimitPagination
 
-    @action(detail=False, methods=['GET'],
+    @action(detail=False, methods=['POST'],
             permission_classes=(IsAuthenticated,),)
-    def subscriptions(self, request):
-        """Список подписок пользователя."""
-        queryset = User.objects.filter(following__user=request.user)
-        page = self.paginate_queryset(queryset)
-        serializer = FavoriteSerializer(page, many=True,
-                                        context={'request': request})
-        return self.get_paginated_response(serializer.data)
-
-    @action(detail=True, methods=['POST', 'DELETE'],
-            permission_classes=(IsAuthenticated,))
     def subscribe(self, request, pk):
         """Подписка/отписка текущего пользователя на/от автора."""
-        author = get_object_or_404(User, id=pk)
-        if request.method == 'POST':
-            serializer = FollowSerializer(author, data=request.data,
-                                          context={'request': request,
-                                                   'author': author})
-            serializer.is_valid(raise_exception=True)
-            Follow.objects.create(user=request.user, author=author)
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
-        get_object_or_404(Follow, user=request.user,
-                          author=author).delete()
-        return Response({'detail': 'Успешная отписка'},
-                        status=status.HTTP_204_NO_CONTENT)
+        recipe = get_object_or_404(Recipe, pk=pk)
+        data = {
+            'user': request.user.pk,
+            'recipe': recipe.pk
+        }
+        serializer = FavoriteSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        serializer = RecipeSubscriptionSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, pk):
+        """Удаляет рецепт из избранного."""
+        recipe = get_object_or_404(Recipe, pk=pk)
+        FollowSerializer.objects.filter(user=request.user,
+                                        recipe=recipe).delete()
+        message = {
+            'detail': 'Рецепт успешно удален из избранного'}
+        return Response(message, status=status.HTTP_204_NO_CONTENT)
 
 
 class ShoppingCartViewSet(viewsets.ViewSet):
