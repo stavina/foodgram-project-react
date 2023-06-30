@@ -271,6 +271,13 @@ class RecipeCreateSerializer(RecipeSerializer):
             pass
 
     def validate(self, data):
+        tags = data['tags']
+        tags_list = []
+        for tags_item in tags:
+            if tags_item in tags_list:
+                raise serializers.ValidationError(
+                    'Тэги не должны повторяться')
+            tags_list.append(tags_item)
         ingredients_list = []
         ingredients_amount = data.get('ingredients_amount')
         if not ingredients_amount:

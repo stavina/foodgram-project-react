@@ -143,7 +143,7 @@ class FavoriteRecipeViewSet(viewsets.ViewSet):
         permission_classes=(AuthorOrAdminOrReadOnly,))
     def favorite(self, request, pk):
         """Добавляет рецепт в избранное."""
-        recipe = get_object_or_404(Recipe, pk=pk)
+        recipe = get_object_or_404(Recipe, pk=pk)[:3]
         data = {
             'user': request.user.pk,
             'recipe': recipe.pk
