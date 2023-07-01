@@ -149,7 +149,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.BooleanField(read_only=True)
     is_in_shopping_cart = serializers.BooleanField(read_only=True)
     author = UserReadSerializer(read_only=True)
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
@@ -229,8 +229,10 @@ class RecipeCreateSerializer(RecipeSerializer):
     """Сериализатор создания рецепта."""
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Tag.objects.all()
+        queryset=Tag.objects.all(),
+        allow_empty=False
     )
+    image = Base64ImageField(allow_empty=False)
     cooking_time = serializers.IntegerField(validators=[
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
