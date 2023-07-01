@@ -232,7 +232,6 @@ class RecipeCreateSerializer(RecipeSerializer):
         queryset=Tag.objects.all(),
         allow_empty=False
     )
-    image = Base64ImageField(allow_empty=False)
     cooking_time = serializers.IntegerField(validators=[
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
@@ -244,6 +243,13 @@ class RecipeCreateSerializer(RecipeSerializer):
         model = Recipe
         fields = ('id', 'author', 'name', 'text', 'ingredients', 'tags',
                   'cooking_time', 'image')
+        extra_kwargs = {
+            'ingredients': {'required': True, 'allow_empty': False},
+            'tags': {'required': True, 'allow_empty': False},
+            'name': {'required': True, 'allow_empty': False},
+            'text': {'required': True, 'allow_empty': False},
+            'image': {'required': True, 'allow_empty': False},
+        }
 
     @staticmethod
     def save_ingredients(recipe, ingredients):
