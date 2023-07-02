@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilterSet
@@ -122,11 +122,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilterSet
 
     def get_serializer_class(self):
-        if self.action in ('favorite', 'shopping_cart'):
+        if self.request.method in SAFE_METHODS:
             return RecipeSubscriptionSerializer
-        if self.action in ('create', 'partial_update'):
-            return RecipeCreateSerializer
-        return RecipeSerializer
+        return RecipeCreateSerializer
 
     def get_queryset(self):
         user_id = self.request.user.pk
