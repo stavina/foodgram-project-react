@@ -1,5 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
-from django.core.validators import MinValueValidator, RequiredValidator
+from django.core.validators import MinValueValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -243,12 +243,6 @@ class RecipeCreateSerializer(RecipeSerializer):
         model = Recipe
         fields = ('id', 'author', 'name', 'text', 'ingredients', 'tags',
                   'cooking_time', 'image')
-        validators = [
-            RequiredValidator(
-                fields=('id', 'author', 'name', 'text', 'ingredients', 'tags',
-                        'cooking_time', 'image')
-            )
-        ]
 
     @staticmethod
     def save_ingredients(recipe, ingredients):
