@@ -231,8 +231,8 @@ class RecipeCreateSerializer(RecipeSerializer):
         many=True,
         queryset=Tag.objects.all()
     )
-    image = serializers.ImageField( 
-        error_messages={'required': 'Обязательное поле.'} 
+    image = serializers.ImageField(
+        error_messages={'required': 'Обязательное поле.'}
     )
     cooking_time = serializers.IntegerField(validators=[
         MinValueValidator(MIN_COOKING_TIME,
