@@ -268,6 +268,7 @@ class RecipeCreateSerializer(RecipeSerializer):
             )
         tags = data['tags']
         tags_list = []
+        tags_item = data.get('tags_item')
         if not tags_item:
             raise serializers.ValidationError(
                 'Укажите минимум 1 тэг.'
