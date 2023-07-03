@@ -1,5 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RequiredValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -231,9 +231,7 @@ class RecipeCreateSerializer(RecipeSerializer):
         many=True,
         queryset=Tag.objects.all()
     )
-    image = serializers.ImageField(
-        error_messages={'required': 'Обязательное поле.'}
-    )
+    image = serializers.ImageField(required=True)
     cooking_time = serializers.IntegerField(validators=[
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
@@ -245,6 +243,12 @@ class RecipeCreateSerializer(RecipeSerializer):
         model = Recipe
         fields = ('id', 'author', 'name', 'text', 'ingredients', 'tags',
                   'cooking_time', 'image')
+        validators = [
+            RequiredValidator(
+                fields=('id', 'author', 'name', 'text', 'ingredients', 'tags',
+                        'cooking_time', 'image')
+            )
+        ]
 
     @staticmethod
     def save_ingredients(recipe, ingredients):
@@ -296,7 +300,10 @@ class RecipeCreateSerializer(RecipeSerializer):
         author = self.context.get('request').user
         ingredients = validated_data.pop('ingredients_amount')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data, author=author)
+        image = validated_data.pop('image')
+        recipe = Recipe.objects.create(
+            **validated_data, image=image, author=author
+        )
         recipe.tags.add(*tags)
         self.save_ingredients(recipe, ingredients)
         return recipe
