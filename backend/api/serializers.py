@@ -263,18 +263,12 @@ class RecipeCreateSerializer(RecipeSerializer):
             raise serializers.ValidationError(
                 'Укажите время приготовления.'
             )
-        tags = data['tags']
-        tags_list = []
-        tags_item = data.get('tags_item')
-        if not tags_item:
+        tags = []
+        tags = data.get('tags')
+        if not tags:
             raise serializers.ValidationError(
                 'Укажите минимум 1 тэг.'
             )
-        for tags_item in tags:
-            if tags_item in tags_list:
-                raise serializers.ValidationError(
-                    'Тэги не должны повторяться.')
-            tags_list.append(tags_item)
         ingredients_list = []
         ingredients_amount = data.get('ingredients_amount')
         if not ingredients_amount:
