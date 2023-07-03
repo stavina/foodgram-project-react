@@ -231,6 +231,9 @@ class RecipeCreateSerializer(RecipeSerializer):
         many=True,
         queryset=Tag.objects.all()
     )
+    image = serializers.ImageField( 
+        error_messages={'required': 'Обязательное поле.'} 
+    )
     cooking_time = serializers.IntegerField(validators=[
         MinValueValidator(MIN_COOKING_TIME,
                           'Минимальное время приготовления - '
@@ -265,6 +268,10 @@ class RecipeCreateSerializer(RecipeSerializer):
             )
         tags = data['tags']
         tags_list = []
+        if not tags_item:
+            raise serializers.ValidationError(
+                'Укажите минимум 1 тэг.'
+            )
         for tags_item in tags:
             if tags_item in tags_list:
                 raise serializers.ValidationError(
